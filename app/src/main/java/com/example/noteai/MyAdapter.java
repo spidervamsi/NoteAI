@@ -15,12 +15,11 @@ import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
-    ArrayList<String> title,desc;
+    ArrayList<String> text;
     Context context;
 
-    public MyAdapter(Context ct,ArrayList<String> t,ArrayList<String> d){
-        title = t;
-        desc = d;
+    public MyAdapter(Context ct,ArrayList<String> t){
+        text = t;
         context = ct;
     }
 
@@ -36,15 +35,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
-        holder.title.setText(title.get(position));
-        holder.desc.setText(desc.get(position));
+        holder.text.setText(text.get(position));
 
         holder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, NoteEditor.class);
-                intent.putExtra("Title",title.get(position));
-                intent.putExtra("Desc",desc.get(position));
+                intent.putExtra("Text",text.get(position));
                 context.startActivity(intent);
             }
         });
@@ -53,18 +50,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     @Override
     public int getItemCount() {
-        return title.size();
+        return text.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView title,desc;
+        TextView text;
         ConstraintLayout mainLayout;
 
 
         public MyViewHolder(@NonNull View itemView){
             super(itemView);
-            title = itemView.findViewById(R.id.titleId);
-            desc = itemView.findViewById(R.id.descId);
+            text = itemView.findViewById(R.id.textId);
             mainLayout = itemView.findViewById(R.id.mainLayout);
         }
 
