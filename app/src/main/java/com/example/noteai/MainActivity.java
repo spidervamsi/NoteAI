@@ -12,7 +12,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    ArrayList<String> text =new ArrayList<String>();
+    static ArrayList<String> text =new ArrayList<String>();
+    static MyAdapter myAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
             text.add(Integer.toString(i));
         }
         recyclerView = findViewById(R.id.recycle);
-        MyAdapter myAdapter = new MyAdapter(this,text);
+        myAdapter = new MyAdapter(this,text);
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

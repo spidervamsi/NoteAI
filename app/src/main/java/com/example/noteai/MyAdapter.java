@@ -42,6 +42,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             public void onClick(View view) {
                 Intent intent = new Intent(context, NoteEditor.class);
                 intent.putExtra("Text",text.get(position));
+                intent.putExtra("Pos",position);
                 context.startActivity(intent);
             }
         });
