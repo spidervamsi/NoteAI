@@ -3,6 +3,14 @@ from . import engine_api_blueprint
 
 
 @engine_api_blueprint.route("/get", methods=['GET'])
-def swagger_api_docs_yml():
+def simple_get():
+    str = {'name':''}
+    str['name'] = "velivela vamsi krishna"
+    return jsonify(str)
 
-    return "heybro"
+@engine_api_blueprint.route("/post", methods=['POST'])
+def simple_post():
+    print(request.get_json())
+    str = {'name':''}
+    str['name'] = "velivela vamsi krishna"
+    return jsonify(str)
