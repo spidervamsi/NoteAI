@@ -5,14 +5,11 @@ import nltk
 nltk.download('punkt')
 import spacy
 import pytextrank
-from summarizer import Summarizer
 
-model = Summarizer()
 nlp = spacy.load('en_core_web_sm')
 
 tr = pytextrank.TextRank()
 nlp.add_pipe(tr.PipelineComponent, name='textrank', last=True)
-
 
 
 @engine_api_blueprint.route("/get", methods=['GET'])
@@ -39,5 +36,4 @@ def summarize_post():
         words.append(p.text)
     res = {'spacy':'','bert':''}
     res['spacy'] = words
-    res['bert'] = model(text,0.2)
     return jsonify(res)
