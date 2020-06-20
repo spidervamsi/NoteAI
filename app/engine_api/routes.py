@@ -9,7 +9,7 @@ import pickle
 import en_core_web_sm
 
 nlp = en_core_web_sm.load()
-filename = '../../model/bertModel.sav'
+filename = '../model/bertModel.sav'
 loaded_model = pickle.load(open(filename, 'rb'))
 
 tr = pytextrank.TextRank()
