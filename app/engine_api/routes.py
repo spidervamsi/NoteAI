@@ -6,10 +6,11 @@ nltk.download('punkt')
 import spacy
 import pytextrank
 import pickle
+import en_core_web_sm
 
-nlp = spacy.load('en_core_web_sm')
-filename = '../../model/bertModel.sav'
-loaded_model = pickle.load(open(filename, 'rb'))
+nlp = en_core_web_sm.load()
+# filename = '../../model/bertModel.sav'
+# loaded_model = pickle.load(open(filename, 'rb'))
 
 tr = pytextrank.TextRank()
 nlp.add_pipe(tr.PipelineComponent, name='textrank', last=True)
@@ -39,5 +40,5 @@ def summarize_post():
         words.append(p.text)
     res = {'spacy':'','bert':''}
     res['spacy'] = words
-    res['bert'] = loaded_model(text, 0.2)
+    # res['bert'] = loaded_model(text, 0.2)
     return jsonify(res)
