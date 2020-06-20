@@ -9,8 +9,8 @@ import pickle
 import en_core_web_sm
 
 nlp = en_core_web_sm.load()
-# filename = '../../model/bertModel.sav'
-# loaded_model = pickle.load(open(filename, 'rb'))
+filename = '../../model/bertModel.sav'
+loaded_model = pickle.load(open(filename, 'rb'))
 
 tr = pytextrank.TextRank()
 nlp.add_pipe(tr.PipelineComponent, name='textrank', last=True)
