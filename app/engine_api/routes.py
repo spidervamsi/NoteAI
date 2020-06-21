@@ -42,5 +42,5 @@ def summarize_post():
         words.append(p.text)
     res = {'spacy':'','bert':''}
     res['spacy'] = words
-    # res['bert'] = loaded_model(text, 0.2)
+    res['bert'] = model(text, 0.2)
     return jsonify(res)
