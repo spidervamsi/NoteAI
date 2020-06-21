@@ -5,12 +5,14 @@ import nltk
 nltk.download('punkt')
 import spacy
 import pytextrank
-import pickle
+# import pickle
 import en_core_web_sm
+from summarizer import Summarizer
 
 nlp = en_core_web_sm.load()
 filename = '../model/bertModel.sav'
-loaded_model = pickle.load(open(filename, 'rb'))
+# loaded_model = pickle.load(open(filename, 'rb'))
+model = Summarizer()
 
 tr = pytextrank.TextRank()
 nlp.add_pipe(tr.PipelineComponent, name='textrank', last=True)
