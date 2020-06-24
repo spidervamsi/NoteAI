@@ -28,6 +28,11 @@ public class NoteEditor extends AppCompatActivity {
         }
         if(getIntent().hasExtra("Pos")){
             pos = getIntent().getIntExtra("Pos",-1);
+        }else{
+            // New Note
+            MainActivity.text.add("");
+            pos = MainActivity.text.size() -1;
+            MainActivity.myAdapter.notifyDataSetChanged();
         }
 
         text.addTextChangedListener(new TextWatcher() {
