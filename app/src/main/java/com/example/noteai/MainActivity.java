@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 
@@ -27,6 +29,31 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0;i<30;i++){
             text.add(Integer.toString(i));
         }
+//    try{
+//
+//        SQLiteDatabase noteDB = this.openOrCreateDatabase("NoteAI",MODE_PRIVATE,null);
+////
+//        noteDB.execSQL("CREATE TABLE IF NOT EXISTS notes (body VARCHAR, id INTEGER PRIMARY KEY)");
+//        noteDB.execSQL("INSERT INTO notes (body) VALUES ('heyyyy')");
+//        noteDB.execSQL("INSERT INTO notes (body) VALUES ('bro')");
+//        noteDB.execSQL("INSERT INTO notes (body) VALUES ('how are you')");
+//
+//        Cursor c = noteDB.rawQuery("SELECT * FROM notes",null);
+//        int bodyIndex = c.getColumnIndex("body");
+//        int idIndex = c.getColumnIndex("id");
+////
+//        c.moveToFirst();
+//        do {
+//            System.out.println("id:"+Integer.toString(c.getColumnIndex(Integer.toString(idIndex)))+" body:"+c.getColumnIndex(Integer.toString(bodyIndex)));
+//
+//        }while(c.moveToNext());
+////
+//    }catch (Exception e){
+//        System.out.println("Main Exception "+e.toString());
+//    }
+
+
+
         recyclerView = findViewById(R.id.recycle);
         myAdapter = new MyAdapter(this,text);
         recyclerView.setAdapter(myAdapter);
