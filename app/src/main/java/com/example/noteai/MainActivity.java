@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,28 +30,61 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0;i<30;i++){
             text.add(Integer.toString(i));
         }
-//    try{
+    try{
+
+        SQLiteDatabase noteDB = this.openOrCreateDatabase("NoteAI",MODE_PRIVATE,null);
 //
-//        SQLiteDatabase noteDB = this.openOrCreateDatabase("NoteAI",MODE_PRIVATE,null);
-////
-//        noteDB.execSQL("CREATE TABLE IF NOT EXISTS notes (body VARCHAR, id INTEGER PRIMARY KEY)");
-//        noteDB.execSQL("INSERT INTO notes (body) VALUES ('heyyyy')");
-//        noteDB.execSQL("INSERT INTO notes (body) VALUES ('bro')");
-//        noteDB.execSQL("INSERT INTO notes (body) VALUES ('how are you')");
+
+        try{noteDB.execSQL("DROP TABLE users");
+        }catch (Exception e){
+            Log.i("notedev exception",e.getMessage());
+        }
+
+        noteDB.execSQL("CREATE TABLE IF NOT EXISTS users (person_id INTEGER PRIMARY KEY, body TEXT, age INT(3))");
+        noteDB.execSQL("INSERT INTO users (body,age) VALUES ('type1',21)");
+        noteDB.execSQL("INSERT INTO users (body,age) VALUES ('type4',22)");
+        noteDB.execSQL("INSERT INTO users (body,age) VALUES ('type3',24)");
+
+        Cursor c = noteDB.rawQuery("SELECT * FROM users",null);
+        int bodyIndex = c.getColumnIndex("body");
+        int ageIndex = c.getColumnIndex("age");
+        int idIndex = c.getColumnIndex("person_id");
 //
-//        Cursor c = noteDB.rawQuery("SELECT * FROM notes",null);
-//        int bodyIndex = c.getColumnIndex("body");
-//        int idIndex = c.getColumnIndex("id");
-////
-//        c.moveToFirst();
-//        do {
-//            System.out.println("id:"+Integer.toString(c.getColumnIndex(Integer.toString(idIndex)))+" body:"+c.getColumnIndex(Integer.toString(bodyIndex)));
-//
-//        }while(c.moveToNext());
-////
-//    }catch (Exception e){
-//        System.out.println("Main Exception "+e.toString());
-//    }
+        c.moveToFirst();
+        for(int i=0;i<c.getCount();i++){
+            Log.i("notedev","body:"+c.getString(bodyIndex));
+            Log.i("notedev","age:"+Integer.toString(c.getInt(ageIndex)));
+            Log.i("notedev","id:"+Integer.toString(c.getInt(idIndex)));
+            c.moveToNext();
+        }
+
+
+        noteDB.execSQL("DELETE FROM users WHERE person_id=1");
+
+        c = noteDB.rawQuery("SELECT * FROM users",null);
+        c.moveToFirst();
+        for(int i=0;i<c.getCount();i++){
+            Log.i("notedev","body:"+c.getString(bodyIndex));
+            Log.i("notedev","age:"+Integer.toString(c.getInt(ageIndex)));
+            Log.i("notedev","id:"+Integer.toString(c.getInt(idIndex)));
+            c.moveToNext();
+        }
+
+        noteDB.execSQL("INSERT INTO users (body,age) VALUES ('type5',26)");
+        c = noteDB.rawQuery("SELECT * FROM users",null);
+        c.moveToFirst();
+        for(int i=0;i<c.getCount();i++){
+            Log.i("notedev","body:"+c.getString(bodyIndex));
+            Log.i("notedev","age:"+Integer.toString(c.getInt(ageIndex)));
+            Log.i("notedev","id:"+Integer.toString(c.getInt(idIndex)));
+            c.moveToNext();
+        }
+
+
+
+    }catch (Exception e){
+        System.out.println("notedev exception"+e.toString());
+    }
 
 
 

@@ -33,8 +33,9 @@ adb logcat -d
 #logs to a file
 adb logcat > noteAI-logs.txt
 
-#clear logs
+#clear logs & clear logs from buffer
 adb logcat -c
+adb logcat -b all -c
 
 #to search among logs
 adb logcat | grep "NoteAITest"
