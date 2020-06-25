@@ -2,6 +2,7 @@ package com.example.noteai;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
         holder.text.setText(text.get(position));
+
+        Log.i("NoteAITest","adapter "+text.get(position));
 
         holder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override

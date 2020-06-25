@@ -36,6 +36,9 @@ adb logcat > noteAI-logs.txt
 #clear logs
 adb logcat -c
 
+#to search among logs
+adb logcat | grep "NoteAITest"
+
 #to get into Mobile OS
 adb shell
 
