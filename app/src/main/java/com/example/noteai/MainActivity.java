@@ -4,10 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.View;
 
@@ -25,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("notedev","oncreate");
+
         setContentView(R.layout.activity_main);
 
         for(int i=0;i<30;i++){
@@ -32,53 +36,45 @@ public class MainActivity extends AppCompatActivity {
         }
     try{
 
-        SQLiteDatabase noteDB = this.openOrCreateDatabase("NoteAI",MODE_PRIVATE,null);
-//
-
-        try{noteDB.execSQL("DROP TABLE users");
-        }catch (Exception e){
-            Log.i("notedev exception",e.getMessage());
-        }
-
-        noteDB.execSQL("CREATE TABLE IF NOT EXISTS users (person_id INTEGER PRIMARY KEY, body TEXT, age INT(3))");
-        noteDB.execSQL("INSERT INTO users (body,age) VALUES ('type1',21)");
-        noteDB.execSQL("INSERT INTO users (body,age) VALUES ('type4',22)");
-        noteDB.execSQL("INSERT INTO users (body,age) VALUES ('type3',24)");
-
-        Cursor c = noteDB.rawQuery("SELECT * FROM users",null);
-        int bodyIndex = c.getColumnIndex("body");
-        int ageIndex = c.getColumnIndex("age");
-        int idIndex = c.getColumnIndex("person_id");
-//
-        c.moveToFirst();
-        for(int i=0;i<c.getCount();i++){
-            Log.i("notedev","body:"+c.getString(bodyIndex));
-            Log.i("notedev","age:"+Integer.toString(c.getInt(ageIndex)));
-            Log.i("notedev","id:"+Integer.toString(c.getInt(idIndex)));
-            c.moveToNext();
+        Model model = new Model(this,"NoteAI",null,1);
+        SQLiteDatabase noteDB = model.getWritableDatabase();
+        long newRowId;
+        for(String t:text){
+            ContentValues values = new ContentValues();
+            values.put(FeedReaderContract.FeedEntry.COLUMN_BODY, t);
+            newRowId = noteDB.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
+            Log.i("notedev","id "+Long.toString(newRowId));
         }
 
 
-        noteDB.execSQL("DELETE FROM users WHERE person_id=1");
+        // To read from Database
+        String[] projection = {
+                "id",
+                FeedReaderContract.FeedEntry.COLUMN_BODY
+        };
 
-        c = noteDB.rawQuery("SELECT * FROM users",null);
-        c.moveToFirst();
-        for(int i=0;i<c.getCount();i++){
-            Log.i("notedev","body:"+c.getString(bodyIndex));
-            Log.i("notedev","age:"+Integer.toString(c.getInt(ageIndex)));
-            Log.i("notedev","id:"+Integer.toString(c.getInt(idIndex)));
-            c.moveToNext();
-        }
+//        String selection = FeedReaderContract.FeedEntry.COLUMN_BODY + " = ?";
+        String selection = projection[0] +  " = ?";
+        String[] selectionArgs = { "6" };
 
-        noteDB.execSQL("INSERT INTO users (body,age) VALUES ('type5',26)");
-        c = noteDB.rawQuery("SELECT * FROM users",null);
-        c.moveToFirst();
-        for(int i=0;i<c.getCount();i++){
-            Log.i("notedev","body:"+c.getString(bodyIndex));
-            Log.i("notedev","age:"+Integer.toString(c.getInt(ageIndex)));
-            Log.i("notedev","id:"+Integer.toString(c.getInt(idIndex)));
-            c.moveToNext();
+
+        Cursor cursor = noteDB.query(
+                FeedReaderContract.FeedEntry.TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                selection,              // The columns for the WHERE clause
+                selectionArgs,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+
+        while(cursor.moveToNext()) {
+            String item = cursor.getString(1);
+            Log.i("notedev","itemId : "+item);
         }
+        cursor.close();
+
+
 
 
 
