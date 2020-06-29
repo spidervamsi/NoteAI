@@ -16,10 +16,10 @@ import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
-    ArrayList<String> text;
+    ArrayList<RowData> text;
     Context context;
 
-    public MyAdapter(Context ct,ArrayList<String> t){
+    public MyAdapter(Context ct,ArrayList<RowData> t){
         text = t;
         context = ct;
     }
@@ -36,7 +36,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
-        holder.text.setText(text.get(position));
+        holder.text.setText(text.get(position).getBody());
 
         Log.i("NoteAITest","adapter "+text.get(position));
 
@@ -44,8 +44,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, NoteEditor.class);
-                intent.putExtra("Text",text.get(position));
-                intent.putExtra("Pos",position);
+                intent.putExtra("Text",text.get(position).getBody());
+                intent.putExtra("RowId",text.get(position).getRowId());
                 context.startActivity(intent);
             }
         });
@@ -60,7 +60,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView text;
         ConstraintLayout mainLayout;
-
 
         public MyViewHolder(@NonNull View itemView){
             super(itemView);
