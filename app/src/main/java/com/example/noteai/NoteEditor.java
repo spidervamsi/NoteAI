@@ -54,7 +54,7 @@ public class NoteEditor extends AppCompatActivity {
                 if(rowId == -1){
                     rowId = model.insertBody(String.valueOf(charSequence));
                 }else{
-                    model.update(rowId, String.valueOf(charSequence));
+                    model.updateNote(rowId, String.valueOf(charSequence));
                 }
             }
 
@@ -84,7 +84,9 @@ public class NoteEditor extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.del:
-                Log.i("notedev","delete option item selected");
+                Log.i("notedev","delete option item selected "+Long.toString(rowId));
+                model.deleteNote(rowId);
+
         }
         return super.onOptionsItemSelected(item);
     }

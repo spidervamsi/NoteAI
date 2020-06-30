@@ -53,13 +53,19 @@ public class Model extends SQLiteOpenHelper {
     }
 
 
-    public void update(long id, String text) {
+    public void updateNote(long id, String text) {
         ContentValues values = new ContentValues();
         values.put(FeedReaderContract.FeedEntry.COLUMN_BODY, text);
 
         this.getWritableDatabase().update(FeedReaderContract.FeedEntry.TABLE_NAME, values, "id = ? ", new String[] { Long.toString(id) } );
     }
 
+    public Integer deleteNote (Long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(FeedReaderContract.FeedEntry.TABLE_NAME,
+                "id = ? ",
+                new String[] { Long.toString(id) });
+    }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
