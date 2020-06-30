@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -16,7 +17,6 @@ import android.widget.TextView;
 public class NoteEditor extends AppCompatActivity {
 
     Model model;
-
     EditText text;
     long rowId;
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +52,6 @@ public class NoteEditor extends AppCompatActivity {
                 }else{
                     model.update(rowId, String.valueOf(charSequence));
                 }
-
-
             }
 
             @Override
@@ -63,5 +61,10 @@ public class NoteEditor extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+        Log.i("notedev","destroyed");
+    }
 }
