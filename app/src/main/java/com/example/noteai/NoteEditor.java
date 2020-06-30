@@ -1,9 +1,11 @@
 package com.example.noteai;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -13,9 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
 
 
 public class NoteEditor extends AppCompatActivity {
@@ -85,8 +85,24 @@ public class NoteEditor extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.del:
                 Log.i("notedev","delete option item selected "+Long.toString(rowId));
-                model.deleteNote(rowId);
-
+                try{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Delete the Note")
+                            .setMessage("Are you sure you want to delete the note?")
+                            .setIcon(R.drawable.ic_baseline_delete_note);
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            model.deleteNote(rowId);
+                            finish();
+                        }
+                    });
+                    builder.setNegativeButton("No", null);
+                    AlertDialog dialog = builder.create();
+                    builder.show();
+                }
+                catch (Exception e){
+                    Log.i("notedev",e.getMessage());
+                }
         }
         return super.onOptionsItemSelected(item);
     }
