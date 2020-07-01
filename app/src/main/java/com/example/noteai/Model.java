@@ -9,6 +9,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 public class Model extends SQLiteOpenHelper {
 
     public Model(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
@@ -66,6 +68,8 @@ public class Model extends SQLiteOpenHelper {
                 "id = ? ",
                 new String[] { Long.toString(id) });
     }
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {

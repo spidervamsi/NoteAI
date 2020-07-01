@@ -8,6 +8,7 @@ public class RowData {
     public RowData(long rowId, String body) {
         this.rowId = rowId;
         this.body = body;
+
     }
 
     public long getRowId() {

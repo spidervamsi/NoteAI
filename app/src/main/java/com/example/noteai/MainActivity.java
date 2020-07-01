@@ -1,16 +1,23 @@
 package com.example.noteai;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     static MyAdapter myAdapter;
     static ArrayList<RowData> text =new ArrayList<RowData>();
+    Model model;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private void populate(){
         text.clear();
         try{
-            Model model = new Model(getApplicationContext(),"NoteAI",null,1);
+            model = new Model(getApplicationContext(),"NoteAI",null,1);
             Cursor cursor = model.fetchAll();
             while(cursor.moveToNext()) {
                 RowData row = new RowData(cursor.getLong(0),cursor.getString(1));
@@ -73,5 +81,31 @@ public class MainActivity extends AppCompatActivity {
         myAdapter = new MyAdapter(this,text);
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflator = getMenuInflater();
+        inflator.inflate(R.menu.note_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.del:
+                Log.i("notedev","Main Activity del button "+myAdapter.getSelectedValues());
+
+                for(Long i:myAdapter.getSelectedValues()){
+                    model.deleteNote(i);
+                }
+               recreate();
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }

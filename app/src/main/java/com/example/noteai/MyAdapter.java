@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     ArrayList<RowData> text;
     Context context;
+    ArrayList<Long> selectedValues;
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView text;
+        ConstraintLayout mainLayout;
+        CheckBox checkBox;
+
+        public MyViewHolder(@NonNull View itemView){
+            super(itemView);
+            text = itemView.findViewById(R.id.textId);
+            mainLayout = itemView.findViewById(R.id.mainLayout);
+            checkBox  = itemView.findViewById(R.id.check);
+            selectedValues = new ArrayList<Long>();
+        }
+
+
+
+    }
 
     public MyAdapter(Context ct,ArrayList<RowData> t){
         text = t;
@@ -34,11 +53,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
 
         holder.text.setText(text.get(position).getBody());
 
-        Log.i("NoteAITest","adapter "+text.get(position));
+        Log.i("notedev","adapter "+text.get(position));
 
         holder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +69,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             }
         });
 
+
+            holder.checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        Log.i("notedev", "checkbox " + Integer.toString(position));
+                        CheckBox c = (CheckBox) view;
+                        if(c.isChecked()){
+                            selectedValues.add(text.get(position).getRowId());
+                        }else {
+                            selectedValues.remove(text.get(position).getRowId());
+                        }
+
+                    }catch (Exception e){
+                        Log.i("notedev","check exception "+e.getMessage());
+                    }
+
+                }
+            });
+
     }
 
     @Override
@@ -57,17 +96,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         return text.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView text;
-        ConstraintLayout mainLayout;
-
-        public MyViewHolder(@NonNull View itemView){
-            super(itemView);
-            text = itemView.findViewById(R.id.textId);
-            mainLayout = itemView.findViewById(R.id.mainLayout);
-        }
-
-
-
+    public ArrayList<Long> getSelectedValues(){
+        return selectedValues;
     }
+
+
 }
