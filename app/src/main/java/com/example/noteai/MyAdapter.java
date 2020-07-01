@@ -53,7 +53,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
         holder.text.setText(text.get(position).getBody());
 
@@ -69,25 +69,34 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             }
         });
 
+        holder.mainLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
 
-            holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        Log.i("notedev", "checkbox " + Integer.toString(position));
-                        CheckBox c = (CheckBox) view;
-                        if(c.isChecked()){
-                            selectedValues.add(text.get(position).getRowId());
-                        }else {
-                            selectedValues.remove(text.get(position).getRowId());
-                        }
+                Log.i("notedev","on long click");
+                return true;
+            }
+        });
 
-                    }catch (Exception e){
-                        Log.i("notedev","check exception "+e.getMessage());
+
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Log.i("notedev", "checkbox " + Integer.toString(position));
+                    CheckBox c = (CheckBox) view;
+                    if(c.isChecked()){
+                        selectedValues.add(text.get(position).getRowId());
+                    }else {
+                        selectedValues.remove(text.get(position).getRowId());
                     }
 
+                }catch (Exception e){
+                    Log.i("notedev","check exception "+e.getMessage());
                 }
-            });
+
+            }
+        });
 
     }
 
