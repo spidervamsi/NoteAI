@@ -97,11 +97,13 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.del:
                 Log.i("notedev","Main Activity del button "+myAdapter.getSelectedValues());
-
-                for(Long i:myAdapter.getSelectedValues()){
-                    model.deleteNote(i);
+                if(myAdapter.getSelectedValues()!=null){
+                    for(Long i:myAdapter.getSelectedValues()){
+                        model.deleteNote(i);
+                    }
+                    recreate();
                 }
-               recreate();
+
 
         }
         return super.onOptionsItemSelected(item);
