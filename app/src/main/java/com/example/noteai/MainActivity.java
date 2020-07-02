@@ -1,29 +1,23 @@
 package com.example.noteai;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ContentValues;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -34,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     static MyAdapter myAdapter;
     static ArrayList<RowData> text =new ArrayList<RowData>();
     Model model;
+    MenuItem mainDeleteButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,10 +75,16 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e){
             System.out.println("notedev exception"+e.toString());
         }
+
+
         recyclerView = findViewById(R.id.recycle);
         myAdapter = new MyAdapter(this,text);
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        if(mainDeleteButton!=null){
+            mainDeleteButton.setVisible(false);
+            myAdapter.setMenuItem(mainDeleteButton);
+        }
 
     }
 
@@ -91,14 +92,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflator = getMenuInflater();
-        inflator.inflate(R.menu.note_menu, menu);
+        inflator.inflate(R.menu.main_menu, menu);
+
+        try{
+           MenuItem m = (MenuItem) menu.getItem(0);
+            mainDeleteButton = m;
+           m.setVisible(false);
+           myAdapter.setMenuItem(mainDeleteButton);
+        }
+        catch (Exception e){
+            Log.i("notedev","main del "+e.getMessage());
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.del:
+            case R.id.mainMenuDel:
                 Log.i("notedev","Main Activity del button "+myAdapter.getSelectedValues());
                 if(myAdapter.getSelectedValues()!=null){
                     for(Long i:myAdapter.getSelectedValues()){
@@ -109,6 +120,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 }
