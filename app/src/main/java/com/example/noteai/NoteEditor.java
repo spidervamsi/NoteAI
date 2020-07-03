@@ -1,14 +1,17 @@
 package com.example.noteai;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -16,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
+
+import java.util.ArrayList;
 
 
 public class NoteEditor extends AppCompatActivity {
@@ -103,7 +108,32 @@ public class NoteEditor extends AppCompatActivity {
                 catch (Exception e){
                     Log.i("notedev",e.getMessage());
                 }
+                break;
+            case R.id.noteRecord:
+                Log.i("notedev","record clicked");
+                Intent speech = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                speech.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                speech.putExtra(RecognizerIntent.EXTRA_PROMPT,"Speech to text");
+                startActivityForResult(speech,1);
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 1 && resultCode == RESULT_OK){
+            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String beforeText = text.getText().toString();
+            if(!beforeText.isEmpty()){
+                beforeText = beforeText+". ";
+            }
+            for(String m:matches){
+                text.setText(beforeText+m);
+                text.setSelection(text.getText().length());
+                Log.i("notedev","match "+m);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
