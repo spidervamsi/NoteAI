@@ -28,9 +28,11 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
     EditText text;
     long rowId;
     private SpeechRecognizer speech = null;
+    Intent speechIntent;
     private Intent recognizerIntent;
     public String LOG_TAG = "notedev";
     private static final String TAG = "notedev";
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,15 +45,21 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
         loadData();
 
         try{
-        speech = SpeechRecognizer.createSpeechRecognizer(this);
-        Log.i(LOG_TAG, "isRecognitionAvailable: " + SpeechRecognizer.isRecognitionAvailable(this));
-//        speech.setRecognitionListener(this);
-        recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
-                "en");
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
+            speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+            // Use a language model based on free-form speech recognition.
+            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+            speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+            speechIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                    getApplicationContext().getPackageName());
+
+            // Add custom listeners.
+//                CustomRecognitionListener listener = new CustomRecognitionListener();
+            speech = SpeechRecognizer.createSpeechRecognizer(getApplicationContext());
+            speech.setRecognitionListener(this);
+
         }catch (Exception e){Log.i(LOG_TAG,"speech exception "+e.getMessage());}
     }
 
@@ -89,7 +97,7 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        speech.stopListening();
         Log.i("notedev","destroyed");
     }
 
@@ -128,21 +136,8 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
             case R.id.noteRecord:
                 try{
                 Log.i("notedev","record clicked");
-                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-                // Use a language model based on free-form speech recognition.
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
-                        getApplicationContext().getPackageName());
-
-                // Add custom listeners.
-//                CustomRecognitionListener listener = new CustomRecognitionListener();
-                SpeechRecognizer sr = SpeechRecognizer.createSpeechRecognizer(getApplicationContext());
-                sr.setRecognitionListener(this);
-                sr.startListening(intent);
+                speech.startListening(speechIntent);
                 }catch (Exception e){
                     Log.i(LOG_TAG,"record button "+e.getMessage());
                 }
@@ -180,10 +175,10 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
         Log.i(LOG_TAG, "onResults");
         ArrayList<String> matches = results
                 .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-        String text = "";
         matches.get(0);
         this.text.setText(this.text.getText() +" "+matches.get(0));
         this.text.setSelection(this.text.getText().length());
+        speech.startListening(speechIntent);
     }
 
     public void onPartialResults(Bundle partialResults) {
