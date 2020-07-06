@@ -7,12 +7,12 @@ import spacy
 import pytextrank
 # import pickle
 import en_core_web_sm
-from summarizer import Summarizer
+# from summarizer import Summarizer
 
 nlp = en_core_web_sm.load()
 filename = '../model/bertModel.sav'
 # loaded_model = pickle.load(open(filename, 'rb'))
-model = Summarizer()
+# model = Summarizer()
 
 tr = pytextrank.TextRank()
 nlp.add_pipe(tr.PipelineComponent, name='textrank', last=True)
@@ -42,5 +42,5 @@ def summarize_post():
         words.append(p.text)
     res = {'spacy':'','bert':''}
     res['spacy'] = words
-    res['bert'] = model(text, 0.2)
+    res['bert'] = ''
     return jsonify(res)
