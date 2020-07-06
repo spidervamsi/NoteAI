@@ -4,14 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,13 +19,19 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 
-public class NoteEditor extends AppCompatActivity {
-
+public class NoteEditor extends AppCompatActivity implements RecognitionListener{
+    private static final int REQUEST_RECORD_PERMISSION = 100;
     Model model;
     EditText text;
     long rowId;
+    private SpeechRecognizer speech = null;
+    private Intent recognizerIntent;
+    public String LOG_TAG = "notedev";
+    private static final String TAG = "notedev";
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_editor);
@@ -37,6 +41,18 @@ public class NoteEditor extends AppCompatActivity {
 
         model = new Model(getApplicationContext(),"NoteAI",null,1);
         loadData();
+
+        try{
+        speech = SpeechRecognizer.createSpeechRecognizer(this);
+        Log.i(LOG_TAG, "isRecognitionAvailable: " + SpeechRecognizer.isRecognitionAvailable(this));
+//        speech.setRecognitionListener(this);
+        recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
+                "en");
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
+        }catch (Exception e){Log.i(LOG_TAG,"speech exception "+e.getMessage());}
     }
 
     private void loadData(){
@@ -110,30 +126,71 @@ public class NoteEditor extends AppCompatActivity {
                 }
                 break;
             case R.id.noteRecord:
+                try{
                 Log.i("notedev","record clicked");
-                Intent speech = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speech.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                speech.putExtra(RecognizerIntent.EXTRA_PROMPT,"Speech to text");
-                startActivityForResult(speech,1);
-                break;
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+                // Use a language model based on free-form speech recognition.
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                        getApplicationContext().getPackageName());
+
+                // Add custom listeners.
+//                CustomRecognitionListener listener = new CustomRecognitionListener();
+                SpeechRecognizer sr = SpeechRecognizer.createSpeechRecognizer(getApplicationContext());
+                sr.setRecognitionListener(this);
+                sr.startListening(intent);
+                }catch (Exception e){
+                    Log.i(LOG_TAG,"record button "+e.getMessage());
+                }
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == 1 && resultCode == RESULT_OK){
-            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            String beforeText = text.getText().toString();
-            if(!beforeText.isEmpty()){
-                beforeText = beforeText+". ";
-            }
-            for(String m:matches){
-                text.setText(beforeText+m);
-                text.setSelection(text.getText().length());
-                Log.i("notedev","match "+m);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onReadyForSpeech(Bundle params) {
+        Log.d(TAG, "onReadyForSpeech");
+    }
+
+    public void onBeginningOfSpeech() {
+        Log.d(TAG, "onBeginningOfSpeech");
+    }
+
+    public void onRmsChanged(float rmsdB) {
+        Log.d(TAG, "onRmsChanged "+ Float.toString(rmsdB));
+    }
+
+    public void onBufferReceived(byte[] buffer) {
+        Log.d(TAG, "onBufferReceived");
+    }
+
+    public void onEndOfSpeech() {
+        Log.d(TAG, "onEndofSpeech");
+    }
+
+    public void onError(int error) {
+        Log.e(TAG, "error " + error);
+
+//        conversionCallaback.onErrorOccured(TranslatorUtil.getErrorText(error));
+    }
+
+    public void onResults(Bundle results) {
+        Log.i(LOG_TAG, "onResults");
+        ArrayList<String> matches = results
+                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        String text = "";
+        matches.get(0);
+        this.text.setText(this.text.getText() +" "+matches.get(0));
+        this.text.setSelection(this.text.getText().length());
+    }
+
+    public void onPartialResults(Bundle partialResults) {
+        Log.d(TAG, "onPartialResults");
+    }
+
+    public void onEvent(int eventType, Bundle params) {
+        Log.d(TAG, "onEvent " + eventType);
     }
 }
