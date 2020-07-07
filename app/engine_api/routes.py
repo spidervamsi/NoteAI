@@ -33,14 +33,35 @@ def simple_post():
 
 @engine_api_blueprint.route("/summarize", methods=['POST'])
 def summarize_post():
+    print("reached here")
     req = request.get_json()
     text = req['text']
     doc = nlp(text)
-    words = []
-    for p in doc._.phrases:
-        print(str(p.rank) + " " + p.text)
-        words.append(p.text)
-    res = {'spacy':'','bert':''}
-    res['spacy'] = words
-    res['bert'] = ''
+    words1 = []
+    words2 = []
+    words3 = []
+    res = {'spacy': '', 'bert': ''}
+    res['spacy'] = {'layer1': '', 'layer2': '', 'layer3': ''}
+    try :
+        for token in doc:
+            if not token.is_stop:
+                print(token.text)
+                words1.append(token.text)
+
+        for chunk in doc.noun_chunks:
+            print(chunk.root.text)
+            words2.append(chunk.root.text)
+
+        for p in doc._.phrases:
+            print(str(p.rank) + " " + p.text)
+            words3.append(p.text)
+
+        res['spacy']['layer3'] = words3
+        res['spacy']['layer2'] = words2
+        res['spacy']['layer1'] = words1
+        res['bert'] = ''
+
+    except Exception as e:
+        print(e)
+
     return jsonify(res)
