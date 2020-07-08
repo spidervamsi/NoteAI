@@ -16,6 +16,7 @@ public final class FeedReaderContract {
 
         public static final String CHILD_TABLE_NAME = "notelayers";
         public static final String CHILD_COLUMN_NAME = "layer";
+        public static final String CHILD_id = "layerid";
     }
 
 

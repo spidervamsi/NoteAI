@@ -27,12 +27,12 @@ public class Model extends SQLiteOpenHelper {
                         " ("+FeedReaderContract.FeedEntry.MAIN_id+" integer primary key, "+FeedReaderContract.FeedEntry.COLUMN_NAME+" text)"
         );
 
-//        sqLiteDatabase.execSQL(
-//                "create table "+FeedReaderContract.FeedEntry.CHILD_TABLE_NAME +
-//                        " (id integer primary key, "+FeedReaderContract.FeedEntry.CHILD_COLUMN_NAME+" text) "+
-//                        "FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)"
-
-//        );
+        sqLiteDatabase.execSQL(
+                "create table "+FeedReaderContract.FeedEntry.CHILD_TABLE_NAME +
+                        " ("+FeedReaderContract.FeedEntry.CHILD_id+" integer primary key, "+FeedReaderContract.FeedEntry.CHILD_COLUMN_NAME+" text, "+
+                        FeedReaderContract.FeedEntry.MAIN_id+" INTEGER NOT NULL,"+
+                        "FOREIGN KEY ("+FeedReaderContract.FeedEntry.MAIN_id+") REFERENCES "+FeedReaderContract.FeedEntry.TABLE_NAME+"("+FeedReaderContract.FeedEntry.MAIN_id+"))"
+        );
     }
 
     // To read from Database
