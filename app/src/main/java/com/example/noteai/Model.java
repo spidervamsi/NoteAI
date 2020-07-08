@@ -24,15 +24,22 @@ public class Model extends SQLiteOpenHelper {
         Log.i("notedev","dbcreate");
         sqLiteDatabase.execSQL(
                 "create table "+FeedReaderContract.FeedEntry.TABLE_NAME +
-                        " (id integer primary key, "+FeedReaderContract.FeedEntry.COLUMN_BODY+" text)"
+                        " ("+FeedReaderContract.FeedEntry.MAIN_id+" integer primary key, "+FeedReaderContract.FeedEntry.COLUMN_NAME+" text)"
         );
+
+//        sqLiteDatabase.execSQL(
+//                "create table "+FeedReaderContract.FeedEntry.CHILD_TABLE_NAME +
+//                        " (id integer primary key, "+FeedReaderContract.FeedEntry.CHILD_COLUMN_NAME+" text) "+
+//                        "FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)"
+
+//        );
     }
 
     // To read from Database
     public Cursor fetchAll(){
         String[] projection = {
-                "id",
-                FeedReaderContract.FeedEntry.COLUMN_BODY
+                FeedReaderContract.FeedEntry.MAIN_id,
+                FeedReaderContract.FeedEntry.COLUMN_NAME
         };
         Cursor cursor = this.getReadableDatabase().query(
                 FeedReaderContract.FeedEntry.TABLE_NAME,   // The table to query
@@ -49,7 +56,7 @@ public class Model extends SQLiteOpenHelper {
 
     public long insertBody(String text){
         ContentValues values = new ContentValues();
-        values.put(FeedReaderContract.FeedEntry.COLUMN_BODY, text);
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME, text);
         long newRowId = this.getWritableDatabase().insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
         return newRowId;
     }
@@ -57,15 +64,15 @@ public class Model extends SQLiteOpenHelper {
 
     public void updateNote(long id, String text) {
         ContentValues values = new ContentValues();
-        values.put(FeedReaderContract.FeedEntry.COLUMN_BODY, text);
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME, text);
 
-        this.getWritableDatabase().update(FeedReaderContract.FeedEntry.TABLE_NAME, values, "id = ? ", new String[] { Long.toString(id) } );
+        this.getWritableDatabase().update(FeedReaderContract.FeedEntry.TABLE_NAME, values, FeedReaderContract.FeedEntry.MAIN_id+" = ? ", new String[] { Long.toString(id) } );
     }
 
     public Integer deleteNote (Long id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(FeedReaderContract.FeedEntry.TABLE_NAME,
-                "id = ? ",
+                FeedReaderContract.FeedEntry.MAIN_id+" = ? ",
                 new String[] { Long.toString(id) });
     }
 
