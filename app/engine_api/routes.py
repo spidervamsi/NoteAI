@@ -41,7 +41,7 @@ def summarize_post():
     words2 = []
     words3 = []
     res = {'spacy': '', 'bert': ''}
-    res['spacy'] = {'layer1': '', 'layer2': '', 'layer3': ''}
+    res['spacy'] = []
     try :
         for token in doc:
             if not token.is_stop:
@@ -56,9 +56,9 @@ def summarize_post():
             print(str(p.rank) + " " + p.text)
             words3.append(p.text)
 
-        res['spacy']['layer3'] = words3
-        res['spacy']['layer2'] = words2
-        res['spacy']['layer1'] = words1
+        res['spacy'].append(words1)
+        res['spacy'].append(words2)
+        res['spacy'].append(words3)
         res['bert'] = ''
 
     except Exception as e:
