@@ -24,7 +24,7 @@ public class Model extends SQLiteOpenHelper {
         Log.i("notedev","dbcreate");
         sqLiteDatabase.execSQL(
                 "create table "+FeedReaderContract.FeedEntry.TABLE_NAME +
-                        " ("+FeedReaderContract.FeedEntry.MAIN_id+" integer primary key, "+FeedReaderContract.FeedEntry.COLUMN_NAME+" text)"
+                        " ("+FeedReaderContract.FeedEntry.MAIN_id+" integer primary key, "+FeedReaderContract.FeedEntry.COLUMN_NAME+" text, "+FeedReaderContract.FeedEntry.COLUMN_NAME_2+" BOOLEAN NOT NULL CHECK ("+FeedReaderContract.FeedEntry.COLUMN_NAME_2+" IN (0,1)))"
         );
 
         sqLiteDatabase.execSQL(
@@ -57,7 +57,9 @@ public class Model extends SQLiteOpenHelper {
     public long insertBody(String text){
         ContentValues values = new ContentValues();
         values.put(FeedReaderContract.FeedEntry.COLUMN_NAME, text);
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_2, 1);
         long newRowId = this.getWritableDatabase().insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
+
         return newRowId;
     }
 
@@ -65,7 +67,7 @@ public class Model extends SQLiteOpenHelper {
     public void updateNote(long id, String text) {
         ContentValues values = new ContentValues();
         values.put(FeedReaderContract.FeedEntry.COLUMN_NAME, text);
-
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_2, 1);
         this.getWritableDatabase().update(FeedReaderContract.FeedEntry.TABLE_NAME, values, FeedReaderContract.FeedEntry.MAIN_id+" = ? ", new String[] { Long.toString(id) } );
     }
 
@@ -75,6 +77,38 @@ public class Model extends SQLiteOpenHelper {
                 FeedReaderContract.FeedEntry.MAIN_id+" = ? ",
                 new String[] { Long.toString(id) });
     }
+
+    public Long insertChild(long rowId){
+        ContentValues values = new ContentValues();
+        values.put(FeedReaderContract.FeedEntry.CHILD_COLUMN_NAME, "Hey Bro");
+        values.put(FeedReaderContract.FeedEntry.MAIN_id, rowId);
+        long newRowId = this.getWritableDatabase().insert(FeedReaderContract.FeedEntry.CHILD_TABLE_NAME, null, values);
+
+        return newRowId;
+    }
+
+
+
+    // To read from Database
+    public Cursor fetchChildAll(){
+        String[] projection = {
+                FeedReaderContract.FeedEntry.CHILD_id,
+                FeedReaderContract.FeedEntry.CHILD_COLUMN_NAME,
+                FeedReaderContract.FeedEntry.MAIN_id
+        };
+        Cursor cursor = this.getReadableDatabase().query(
+                FeedReaderContract.FeedEntry.CHILD_TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                null,              // The columns for the WHERE clause
+                null,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+        return cursor;
+    }
+
+
 
 
 

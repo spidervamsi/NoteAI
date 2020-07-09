@@ -12,6 +12,7 @@ public final class FeedReaderContract {
     public static class FeedEntry implements BaseColumns {
         public static final String TABLE_NAME = "notes";
         public static final String COLUMN_NAME = "body";
+        public static final String COLUMN_NAME_2 = "textchange";
         public static final String MAIN_id = "noteid";
 
         public static final String CHILD_TABLE_NAME = "notelayers";

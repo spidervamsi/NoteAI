@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
@@ -111,6 +112,20 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     Log.i(TAG,"async "+e.getMessage());
+                }
+
+                try{
+                    Log.i(TAG,"data insertion in child table "+model.insertChild(rowId));
+
+                    Cursor cursor = model.fetchChildAll();
+                    while(cursor.moveToNext()) {
+                        RowData row = new RowData(cursor.getLong(0),cursor.getString(1));
+                        Log.i(TAG,"fetch all "+cursor.getLong(0)+cursor.getString(1)+cursor.getLong(2));
+                    }
+                    cursor.close();
+
+                }catch (Exception e){
+                    Log.i(TAG,"data insertion in child table "+e.getMessage());
                 }
             }
 
