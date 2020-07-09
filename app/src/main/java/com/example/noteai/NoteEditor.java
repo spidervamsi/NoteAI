@@ -102,20 +102,25 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 Toast.makeText(getApplicationContext(),"seekbar touch started!", Toast.LENGTH_SHORT).show();
-                AsyncTask<Void, Void, JSONArray> js = new HTTPReqTask(text).execute();
-                try {
-                    Log.i(TAG,"async "+js.get());
-                    jsonArray = js.get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                    Log.i(TAG,"async "+e.getMessage());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Log.i(TAG,"async "+e.getMessage());
-                }
+
 
                 try{
-                    model.setTextChange(rowId,false);
+                    if(model.getTextChange(rowId)){
+                        AsyncTask<Void, Void, JSONArray> js = new HTTPReqTask(text).execute();
+                        jsonArray = js.get();
+                        jsonArray.put(jsonArray.length(),text.getText().toString());
+                        model.setLayers(rowId,jsonArray);
+                        model.setTextChange(rowId,false);
+                    }
+
+                    Cursor cursor = model.getLayers(rowId);
+                    while(cursor.moveToNext()) {
+                        Log.i(TAG,"Child all "+cursor.getLong(0)+" "+cursor.getString(1)+" "+cursor.getLong(2));
+                    }
+                    cursor.close();
+
+
+
                 }catch (Exception e){
                     Log.i(TAG,"data text change "+e.getMessage());
                 }
