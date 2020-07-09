@@ -108,7 +108,10 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
                     if(model.getTextChange(rowId)){
                         AsyncTask<Void, Void, JSONArray> js = new HTTPReqTask(text).execute();
                         jsonArray = js.get();
-                        jsonArray.put(jsonArray.length(),text.getText().toString());
+                        for(int i=jsonArray.length();i>0;i--){
+                            jsonArray.put(i,jsonArray.get(i-1));
+                        }
+                        jsonArray.put(0,text.getText().toString());
                         model.setLayers(rowId,jsonArray);
                         model.setTextChange(rowId,false);
                     }
