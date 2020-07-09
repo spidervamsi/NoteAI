@@ -115,17 +115,9 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
                 }
 
                 try{
-                    Log.i(TAG,"data insertion in child table "+model.insertChild(rowId));
-
-                    Cursor cursor = model.fetchChildAll();
-                    while(cursor.moveToNext()) {
-                        RowData row = new RowData(cursor.getLong(0),cursor.getString(1));
-                        Log.i(TAG,"fetch all "+cursor.getLong(0)+cursor.getString(1)+cursor.getLong(2));
-                    }
-                    cursor.close();
-
+                    model.setTextChange(rowId,false);
                 }catch (Exception e){
-                    Log.i(TAG,"data insertion in child table "+e.getMessage());
+                    Log.i(TAG,"data text change "+e.getMessage());
                 }
             }
 

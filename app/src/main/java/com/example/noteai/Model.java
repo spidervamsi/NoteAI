@@ -39,7 +39,8 @@ public class Model extends SQLiteOpenHelper {
     public Cursor fetchAll(){
         String[] projection = {
                 FeedReaderContract.FeedEntry.MAIN_id,
-                FeedReaderContract.FeedEntry.COLUMN_NAME
+                FeedReaderContract.FeedEntry.COLUMN_NAME,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_2,
         };
         Cursor cursor = this.getReadableDatabase().query(
                 FeedReaderContract.FeedEntry.TABLE_NAME,   // The table to query
@@ -76,6 +77,47 @@ public class Model extends SQLiteOpenHelper {
         return db.delete(FeedReaderContract.FeedEntry.TABLE_NAME,
                 FeedReaderContract.FeedEntry.MAIN_id+" = ? ",
                 new String[] { Long.toString(id) });
+    }
+
+    public Boolean getTextChange(long rowid){
+        boolean result=false;
+        String[] projection = {
+                FeedReaderContract.FeedEntry.MAIN_id,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_2
+        };
+        Cursor cursor = this.getReadableDatabase().query(
+                FeedReaderContract.FeedEntry.TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                FeedReaderContract.FeedEntry.MAIN_id+" =?",              // The columns for the WHERE clause
+                new String[] { Long.toString(rowid) },          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+
+        while(cursor.moveToNext()) {
+
+            if(cursor.getLong(1)==1){
+                result = true;
+            }else{
+                result = false;
+            }
+        }
+        cursor.close();
+        return result;
+    }
+
+    public void setTextChange(long rowid,boolean status){
+        String res;
+        if(status){
+            res = "1";
+        }else{
+            res = "0";
+        }
+
+         this.getWritableDatabase().execSQL("UPDATE "+FeedReaderContract.FeedEntry.TABLE_NAME+
+                                            " SET "+FeedReaderContract.FeedEntry.COLUMN_NAME_2+" = "+res+
+                                            " WHERE "+FeedReaderContract.FeedEntry.MAIN_id+" ="+Long.toString(rowid));
     }
 
     public Long insertChild(long rowId){
