@@ -90,12 +90,14 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
-//                int p = Integer.min(6-progress,jsonArray.length());
-//                try {
-//                    text.setText(jsonArray.get(p).toString());
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
+
+                try {
+                    String layer = model.getLayerData(rowId,progress);
+                    text.setText(layer);
+                    model.setTextChange(rowId,false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(getApplicationContext(),"seekbar progress: "+progress, Toast.LENGTH_SHORT).show();
             }
 
@@ -108,10 +110,7 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
                     if(model.getTextChange(rowId)){
                         AsyncTask<Void, Void, JSONArray> js = new HTTPReqTask(text).execute();
                         jsonArray = js.get();
-                        for(int i=jsonArray.length();i>0;i--){
-                            jsonArray.put(i,jsonArray.get(i-1));
-                        }
-                        jsonArray.put(0,text.getText().toString());
+                        jsonArray.put(jsonArray.length(),text.getText().toString());
                         model.setLayers(rowId,jsonArray);
                         model.setTextChange(rowId,false);
                     }
@@ -121,9 +120,6 @@ public class NoteEditor extends AppCompatActivity implements RecognitionListener
                         Log.i(TAG,"Child all "+cursor.getLong(0)+" "+cursor.getString(1)+" "+cursor.getLong(2));
                     }
                     cursor.close();
-
-
-
                 }catch (Exception e){
                     Log.i(TAG,"data text change "+e.getMessage());
                 }

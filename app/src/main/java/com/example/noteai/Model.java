@@ -139,7 +139,7 @@ public class Model extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         try{
             for(int i=0;i<6;i++){
-                values.put(FeedReaderContract.FeedEntry.CHILD_COLUMN_NAME, jsonArray.get(Math.min(i,jsonArray.length()-1)).toString());
+                values.put(FeedReaderContract.FeedEntry.CHILD_COLUMN_NAME, jsonArray.get(Math.max(0,jsonArray.length()-i-1)).toString());
                 values.put(FeedReaderContract.FeedEntry.MAIN_id, rowId);
                 this.getWritableDatabase().insert(FeedReaderContract.FeedEntry.CHILD_TABLE_NAME, null, values);
             }
@@ -168,6 +168,37 @@ public class Model extends SQLiteOpenHelper {
         return cursor;
 
     }
+
+    public String getLayerData(long rowId,long progress){
+        String[] projection = {
+                FeedReaderContract.FeedEntry.CHILD_id,
+                FeedReaderContract.FeedEntry.CHILD_COLUMN_NAME,
+                FeedReaderContract.FeedEntry.MAIN_id
+        };
+        Cursor cursor = this.getReadableDatabase().query(
+                FeedReaderContract.FeedEntry.CHILD_TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                FeedReaderContract.FeedEntry.MAIN_id+" =?",             // The columns for the WHERE clause
+                new String[] { Long.toString(rowId) },           // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+        int i=0;
+        String res="";
+        while(cursor.moveToNext()) {
+            if(i==progress){
+                res = cursor.getString(1);
+                break;
+            }
+            i++;
+        }
+        cursor.close();
+
+
+        return res;
+    }
+
 
     public void deleteLayer (Long rowId) {
         SQLiteDatabase db = this.getWritableDatabase();
