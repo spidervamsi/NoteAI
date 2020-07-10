@@ -187,7 +187,7 @@ public class Model extends SQLiteOpenHelper {
         int i=0;
         String res="";
         while(cursor.moveToNext()) {
-            if(i==progress){
+            if(i==6-progress-1){
                 res = cursor.getString(1);
                 break;
             }
