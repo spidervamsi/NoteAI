@@ -7,6 +7,7 @@ import spacy
 import pytextrank
 # import pickle
 import en_core_web_sm
+from .preProcess import PreProcess
 # from summarizer import Summarizer
 
 nlp = en_core_web_sm.load()
@@ -36,6 +37,7 @@ def summarize_post():
     print("reached here")
     req = request.get_json()
     text = req['text']
+    text = PreProcess().process(text)
     doc = nlp(text)
     words1 = []
     words2 = []
