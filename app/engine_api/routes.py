@@ -58,9 +58,9 @@ def summarize_post():
             print(str(p.rank) + " " + p.text)
             words3.append(p.text)
 
-        res['spacy'].append(words1)
-        res['spacy'].append(words2)
         res['spacy'].append(words3)
+        res['spacy'].append(words2)
+        res['spacy'].append(words1)
         res['bert'] = ''
 
     except Exception as e:
