@@ -8,6 +8,7 @@ import pytextrank
 # import pickle
 import en_core_web_sm
 from .preProcess import PreProcess
+from .compress import Compress
 # from summarizer import Summarizer
 
 nlp = en_core_web_sm.load()
@@ -37,33 +38,6 @@ def summarize_post():
     print("reached here")
     req = request.get_json()
     text = req['text']
-    text = PreProcess().process(text)
-    doc = nlp(text)
-    words1 = []
-    words2 = []
-    words3 = []
-    res = {'spacy': '', 'bert': ''}
-    res['spacy'] = []
-    try :
-        for token in doc:
-            if not token.is_stop:
-                print(token.text)
-                words1.append(token.text)
+    res = Compress().compress(text)
 
-        for chunk in doc.noun_chunks:
-            print(chunk.root.text)
-            words2.append(chunk.root.text)
-
-        for p in doc._.phrases:
-            print(str(p.rank) + " " + p.text)
-            words3.append(p.text)
-
-        res['spacy'].append(words3)
-        res['spacy'].append(words2)
-        res['spacy'].append(words1)
-        res['bert'] = ''
-
-    except Exception as e:
-        print(e)
-
-    return jsonify(res)
+    return res
