@@ -4,14 +4,13 @@ import en_core_web_sm
 from flask import json, jsonify, request
 
 from .preProcess import PreProcess
-import en_core_web_sm
 
 
 class Compress:
 
     def __init__(self):
         print("Hello compress")
-        self.nlp = en_core_web_sm.load()
+        self.nlp = spacy.load("en_core_web_sm")
         tr = pytextrank.TextRank()
         self.nlp.add_pipe(tr.PipelineComponent, name='textrank', last=True)
 
