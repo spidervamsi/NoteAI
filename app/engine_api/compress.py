@@ -27,36 +27,78 @@ class Compress:
 
         len_words = len(text.split())
         if len_words<10:
-            print("less than 10")
-        elif len_words<30:
-            print("less than 30")
+            print("case1 ")
+            res['spacy'].append(self.removeStopWords_1(doc))
         elif len_words<50:
-            print("less than 50")
-        elif len_words<100:
-            print("less than 100")
-        else:
-            print("above 100")
+            print("case2 ")
+            res['spacy'].append(self.removeStopWords_1(doc))
+            res['spacy'].append(self.nounChunks_2(doc))
+        elif len_words<80:
+            print("case3 ")
+            res['spacy'].append(self.removeStopWords_1(doc))
+            res['spacy'].append(self.nounChunks_2(doc))
+            result = self.textRank_3(doc,1)
+            for i in range(len(result)):
+                res['spacy'].append(result[i])
 
-        try :
+
+        elif len_words<100:
+            print("case4 ")
+            res['spacy'].append(self.removeStopWords_1(doc))
+            res['spacy'].append(self.nounChunks_2(doc))
+            result = self.textRank_3(doc,2)
+            for i in range(len(result)):
+                res['spacy'].append(result[i])
+        else:
+            print("case5 ")
+            res['spacy'].append(self.removeStopWords_1(doc))
+            res['spacy'].append(self.nounChunks_2(doc))
+            result = self.textRank_3(doc,3)
+            for i in range(len(result)):
+                res['spacy'].append(result[i])
+
+
+        # res['spacy'].append(self.textRank_3(doc))
+        # res['spacy'].append(self.nounChunks_2(doc))
+        # res['spacy'].append(self.removeStopWords_1(doc))
+        res['bert'] = ''
+
+        return jsonify(res)
+
+    def removeStopWords_1(self,doc):
+        words =[]
+        try:
             for token in doc:
                 if not token.is_stop:
                     # print(token.text)
-                    words1.append(token.text)
-
-            for chunk in doc.noun_chunks:
-                # print(chunk.root.text)
-                words2.append(chunk.root.text)
-
-            for p in doc._.phrases:
-                # print(str(p.rank) + " " + p.text)
-                words3.append(p.text)
-
-            res['spacy'].append(words3)
-            res['spacy'].append(words2)
-            res['spacy'].append(words1)
-            res['bert'] = ''
-
+                    words.append(token.text)
         except Exception as e:
             print(e)
+        return words
 
-        return jsonify(res)
+    def nounChunks_2(self,doc):
+        words =[]
+        try:
+            for chunk in doc.noun_chunks:
+                # print(chunk.root.text)
+                words.append(chunk.root.text)
+        except Exception as e:
+            print(e)
+        return words
+
+    def textRank_3(self,doc,level):
+        result = []
+        words =[]
+        try:
+            for p in doc._.phrases:
+                words.append(p.text)
+
+            count = pow(2,level)
+            i=1
+            while(i<count) :
+                print("the count "+str(i))
+                result.append(words[:int(len(words)/i)])
+                i = i*2
+        except Exception as e:
+            print(e)
+        return result
