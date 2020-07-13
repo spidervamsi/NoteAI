@@ -4,6 +4,7 @@ import en_core_web_sm
 from flask import json, jsonify, request
 
 from .preProcess import PreProcess
+import en_core_web_sm
 
 
 class Compress:
