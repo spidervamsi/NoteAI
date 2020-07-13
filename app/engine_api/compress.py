@@ -14,6 +14,9 @@ class Compress:
         tr = pytextrank.TextRank()
         self.nlp.add_pipe(tr.PipelineComponent, name='textrank', last=True)
 
+    def getCheck(self,text):
+        return text
+
     def compress(self,text):
         print("hey bro Compress "+text)
         text = PreProcess().process(text)
