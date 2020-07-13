@@ -37,7 +37,12 @@ def simple_post():
 def summarize_post():
     print("reached here")
     req = request.get_json()
-    text = req['text']
-    res = Compress().compress(text)
+    try:
+        text = req['text']
+        print("input text "+text)
+        com = Compress()
+        res = com.compress(text)
+    except Exception as e:
+        print(e)
 
     return res

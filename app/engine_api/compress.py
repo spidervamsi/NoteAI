@@ -18,9 +18,6 @@ class Compress:
         print("hey bro Compress "+text)
         text = PreProcess().process(text)
         doc = self.nlp(text)
-        words1 = []
-        words2 = []
-        words3 = []
         res = {'spacy': '', 'bert': ''}
         res['spacy'] = []
         print("No of words " + str(len(text.split())))
