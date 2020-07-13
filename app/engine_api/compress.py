@@ -10,9 +10,13 @@ class Compress:
 
     def __init__(self):
         print("Hello compress")
-        self.nlp = spacy.load("en_core_web_sm")
-        tr = pytextrank.TextRank()
-        self.nlp.add_pipe(tr.PipelineComponent, name='textrank', last=True)
+        try:
+            self.nlp = spacy.load("en_core_web_sm")
+            tr = pytextrank.TextRank()
+            self.nlp.add_pipe(tr.PipelineComponent, name='textrank', last=True)
+        except Exception as e:
+            print("on create "+e)
+
 
     def getCheck(self,text):
         return text
