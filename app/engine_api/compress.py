@@ -59,7 +59,7 @@ class Compress:
             for i in range(len(result)):
                 res['spacy'].append(result[i])
 
-        res['spacy'] = [[1],[2],[3],[4]]
+        # res['spacy'] = [[1],[2],[3],[4]]
         res['spacy'] = self.smooth(res['spacy'])
         # res['spacy'].append(self.textRank_3(doc))
         # res['spacy'].append(self.nounChunks_2(doc))
@@ -79,7 +79,12 @@ class Compress:
 
     def merge(self,arr1,arr2):
         print("merge "+str(arr1)+" "+str(arr2))
-        return arr1+arr2
+        for i in range(len(arr1)):
+            for word2 in arr2:
+                if arr1[i].lower() in word2.split():
+                    arr1[i] = word2
+                    break
+        return arr1
 
     def removeStopWords_1(self,doc):
         words =[]
