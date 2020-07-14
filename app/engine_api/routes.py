@@ -41,8 +41,8 @@ def summarize_post():
         text = req['text']
         print("input text "+text)
         com = Compress()
-        # output = com.compress(text)
-        output = com.getCheck(text)
+        output = com.compress(text)
+        # output = com.getCheck(text)
     except Exception as e:
         print(e)
 

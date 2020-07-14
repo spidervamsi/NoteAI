@@ -1,6 +1,6 @@
 import spacy
 import pytextrank
-import en_core_web_sm
+import en_core_web_lg
 from flask import json, jsonify, request
 
 from .preProcess import PreProcess
@@ -11,7 +11,7 @@ class Compress:
     def __init__(self):
         print("Hello compress")
         try:
-            self.nlp = spacy.load("en_core_web_sm")
+            self.nlp = en_core_web_lg.load()
             tr = pytextrank.TextRank()
             self.nlp.add_pipe(tr.PipelineComponent, name='textrank', last=True)
         except Exception as e:
