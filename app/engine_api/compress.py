@@ -44,8 +44,6 @@ class Compress:
             result = self.textRank_3(doc,1)
             for i in range(len(result)):
                 res['spacy'].append(result[i])
-
-
         elif len_words<100:
             print("case4 ")
             res['spacy'].append(self.removeStopWords_1(doc))
@@ -61,13 +59,27 @@ class Compress:
             for i in range(len(result)):
                 res['spacy'].append(result[i])
 
-
+        res['spacy'] = [[1],[2],[3],[4]]
+        res['spacy'] = self.smooth(res['spacy'])
         # res['spacy'].append(self.textRank_3(doc))
         # res['spacy'].append(self.nounChunks_2(doc))
         # res['spacy'].append(self.removeStopWords_1(doc))
         res['bert'] = ''
 
         return jsonify(res)
+
+    def smooth(self, res):
+
+        for i in range(len(res)):
+            for j in range(i+1,len(res)):
+                res[i] = self.merge(res[i],res[j])
+            print(len(res))
+
+        return res
+
+    def merge(self,arr1,arr2):
+        print("merge "+str(arr1)+" "+str(arr2))
+        return arr1+arr2
 
     def removeStopWords_1(self,doc):
         words =[]
